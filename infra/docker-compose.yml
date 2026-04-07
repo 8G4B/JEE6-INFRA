@@ -21,6 +21,7 @@ services:
     build:
       context: ../apps/JEE6-LLM
       dockerfile: dockerfile
+      network: host
     container_name: jee6-llm
     restart: unless-stopped
     env_file:
@@ -41,6 +42,7 @@ services:
     build:
       context: ../apps/JEE6.v1
       dockerfile: dockerfile
+      network: host
     container_name: jee6-bot
     restart: unless-stopped
     env_file:
