@@ -4,3 +4,6 @@
 [submodule "apps/JEE6-LLM"]
 	path = apps/JEE6-LLM
 	url = https://github.com/8G4B/JEE6-LLM
+[submodule "apps/JEE6-API"]
+	path = apps/JEE6-API
+	url = https://github.com/8G4B/JEE6-API.git
