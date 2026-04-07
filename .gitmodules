@@ -1,0 +1,6 @@
+[submodule "apps/JEE6.v1"]
+	path = apps/JEE6.v1
+	url = https://github.com/8G4B/JEE6.v1
+[submodule "apps/JEE6-LLM"]
+	path = apps/JEE6-LLM
+	url = https://github.com/8G4B/JEE6-LLM
