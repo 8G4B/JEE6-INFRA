@@ -1,4 +1,17 @@
+# Environment files
 infra/env/*.env
 !infra/env/*.env.example
+
+# Python
 **/__pycache__/
+
+# OS
 **/.DS_Store
+
+# Docker
+infra/mariadb_data/
+
+# IDE
+.vscode/
+.idea/
+.cursor/

@@ -1,0 +1,43 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: jee6-mariadb
+    restart: unless-stopped
+    env_file:
+      - ./env/db.env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - jee6-net
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  bot:
+    build:
+      context: ../apps/JEE6.v1
+      dockerfile: dockerfile
+    container_name: jee6-bot
+    restart: unless-stopped
+    env_file:
+      - ./env/bot.env
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - jee6-net
+
+volumes:
+  mariadb_data:
+    driver: local
+
+networks:
+  jee6-net:
+    driver: bridge

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs ls:*)",
+      "Bash(chmod +x /Users/user/JEE6-INFRA/infra/deploy.sh)"
+    ]
+  }
+}

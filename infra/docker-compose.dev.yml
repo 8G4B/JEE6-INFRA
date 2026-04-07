@@ -1,0 +1,14 @@
+services:
+  mariadb:
+    ports:
+      - "3306:3306"
+
+  bot:
+    build:
+      context: ../apps/JEE6.v1
+      dockerfile: dockerfile
+    volumes:
+      - ../apps/JEE6.v1/src:/app/src
+    environment:
+      - LOG_LEVEL=DEBUG
+    
