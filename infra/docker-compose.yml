@@ -28,7 +28,8 @@ services:
       - ./env/llm.env
     entrypoint: []
     command: >
-      sh -c "vllm serve $${MODEL_NAME} --host 0.0.0.0 --port $${PORT}"
+      sh -c "vllm serve $${MODEL_NAME} --host 0.0.0.0 --port $${PORT}
+      --gpu-memory-utilization 0.90 --enforce-eager"
     volumes:
       - llm_data:/data
     deploy:
