@@ -17,6 +17,26 @@ services:
       retries: 10
       start_period: 30s
 
+  llm:
+    build:
+      context: ../apps/JEE6-LLM
+      dockerfile: dockerfile
+    container_name: jee6-llm
+    restart: unless-stopped
+    env_file:
+      - ./env/llm.env
+    volumes:
+      - llm_data:/data
+    networks:
+      - jee6-net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
   bot:
     build:
       context: ../apps/JEE6.v1
@@ -28,6 +48,7 @@ services:
     environment:
       - DB_HOST=mariadb
       - DB_PORT=3306
+      - VLLM_BASE_URL=http://llm:10000/v1
     depends_on:
       mariadb:
         condition: service_healthy
@@ -36,6 +57,8 @@ services:
 
 volumes:
   mariadb_data:
+    driver: local
+  llm_data:
     driver: local
 
 networks:

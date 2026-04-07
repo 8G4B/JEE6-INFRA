@@ -13,11 +13,13 @@ log()  { echo -e "${GREEN}[DEPLOY]${NC} $*"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 err()  { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-if [ ! -f env/bot.env ] || [ ! -f env/db.env ]; then
-  err "env/bot.env 또는 env/db.env 파일이 없습니다."
-  err "cp env/bot.env.example env/bot.env && cp env/db.env.example env/db.env 로 생성 후 값을 채워주세요."
-  exit 1
-fi
+for envfile in env/bot.env env/db.env env/llm.env; do
+  if [ ! -f "$envfile" ]; then
+    err "$envfile 파일이 없습니다."
+    err "make setup 으로 예제 파일을 복사한 후 값을 채워주세요."
+    exit 1
+  fi
+done
 
 
 log "Submodule 업데이트 중..."
