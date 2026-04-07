@@ -16,6 +16,35 @@ services:
       retries: 10
       start_period: 30s
 
+  redis:
+    image: redis:7-alpine
+    container_name: jee6-redis
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build:
+      context: ../apps/JEE6-API
+      dockerfile: dockerfile
+      network: host
+    container_name: jee6-api
+    restart: unless-stopped
+    network_mode: host
+    env_file:
+      - ./env/api.env
+    environment:
+      - REDIS_URL=redis://127.0.0.1:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+
   llm:
     build:
       context: ../apps/JEE6-LLM
@@ -54,6 +83,7 @@ services:
       - DB_HOST=127.0.0.1
       - DB_PORT=3306
       - VLLM_BASE_URL=http://127.0.0.1:10000/v1
+      - API_GATEWAY_URL=http://127.0.0.1:8080
     depends_on:
       mariadb:
         condition: service_healthy
@@ -62,4 +92,6 @@ volumes:
   mariadb_data:
     driver: local
   llm_data:
+    driver: local
+  redis_data:
     driver: local

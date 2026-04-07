@@ -13,7 +13,7 @@ log()  { echo -e "${GREEN}[DEPLOY]${NC} $*"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 err()  { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-for envfile in env/bot.env env/db.env env/llm.env; do
+for envfile in env/bot.env env/db.env env/llm.env env/api.env; do
   if [ ! -f "$envfile" ]; then
     err "$envfile 파일이 없습니다."
     err "make setup 으로 예제 파일을 복사한 후 값을 채워주세요."

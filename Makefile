@@ -25,6 +25,7 @@ setup:
 	@cp -n $(INFRA_DIR)/env/bot.env.example $(INFRA_DIR)/env/bot.env 2>/dev/null || true
 	@cp -n $(INFRA_DIR)/env/db.env.example $(INFRA_DIR)/env/db.env 2>/dev/null || true
 	@cp -n $(INFRA_DIR)/env/llm.env.example $(INFRA_DIR)/env/llm.env 2>/dev/null || true
+	@cp -n $(INFRA_DIR)/env/api.env.example $(INFRA_DIR)/env/api.env 2>/dev/null || true
 	@echo "$(INFRA_DIR)/env/ 아래 env 파일들을 수정해주세요."
 
 dev:
