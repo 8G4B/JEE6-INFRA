@@ -1,0 +1,4 @@
+infra/env/*.env
+!infra/env/*.env.example
+**/__pycache__/
+**/.DS_Store
