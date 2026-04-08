@@ -44,6 +44,12 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:6974/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   llm:
     build:
@@ -83,9 +89,11 @@ services:
       - DB_HOST=127.0.0.1
       - DB_PORT=3306
       - VLLM_BASE_URL=http://127.0.0.1:10000/v1
-      - API_GATEWAY_URL=http://127.0.0.1:8080
+      - API_GATEWAY_URL=http://127.0.0.1:6974
     depends_on:
       mariadb:
+        condition: service_healthy
+      api:
         condition: service_healthy
 
 volumes:
