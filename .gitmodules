@@ -7,3 +7,6 @@
 [submodule "apps/JEE6-API"]
 	path = apps/JEE6-API
 	url = https://github.com/8G4B/JEE6-API.git
+[submodule "apps/JEE6-FILTER"]
+	path = apps/JEE6-FILTER
+	url = https://github.com/8G4B/JEE6-FILTER.git

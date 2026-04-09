@@ -75,6 +75,23 @@ services:
               count: all
               capabilities: [gpu]
 
+  filter:
+    build:
+      context: ../apps/JEE6-FILTER
+      dockerfile: dockerfile
+      network: host
+    container_name: jee6-filter
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - filter_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:6975/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   bot:
     build:
       context: ../apps/JEE6.v1
@@ -90,10 +107,13 @@ services:
       - DB_PORT=3306
       - VLLM_BASE_URL=http://127.0.0.1:10000/v1
       - API_GATEWAY_URL=http://127.0.0.1:6974
+      - FILTER_API_URL=http://127.0.0.1:6975
     depends_on:
       mariadb:
         condition: service_healthy
       api:
+        condition: service_healthy
+      filter:
         condition: service_healthy
 
 volumes:
@@ -102,4 +122,6 @@ volumes:
   llm_data:
     driver: local
   redis_data:
+    driver: local
+  filter_data:
     driver: local
