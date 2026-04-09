@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(xargs ls:*)",
-      "Bash(chmod +x /Users/user/JEE6-INFRA/infra/deploy.sh)"
+      "Bash(chmod +x /Users/user/JEE6-INFRA/infra/deploy.sh)",
+      "Bash(curl -s \"https://open.neis.go.kr/hub/mealServiceDietInfo?type=json&ATPT_OFCDC_SC_CODE=F10&SD_SCHUL_CODE=7380292&MLSV_FROM_YMD=20260406&MLSV_TO_YMD=20260412&pSize=100\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s \"https://open.neis.go.kr/hub/mealServiceDietInfo?type=json&ATPT_OFCDC_SC_CODE=F10&SD_SCHUL_CODE=7380292&MLSV_FROM_YMD=20260406&MLSV_TO_YMD=20260412&pIndex=1&pSize=100\")",
+      "Bash(python3 -c ':*)"
     ]
   }
 }
