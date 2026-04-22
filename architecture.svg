@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">JEE6-INFRA architecture</title>
+  <desc id="desc">Repository-grounded architecture diagram for the JEE6 Docker Compose deployment.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333333"/>
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#767676"/>
+    </marker>
+  </defs>
+
+  <style>
+    .bg { fill: #ffffff; }
+    .boundary { fill: #fafafa; stroke: #2f2f2f; stroke-width: 1.5; }
+    .node { fill: #ffffff; stroke: #2f2f2f; stroke-width: 1.5; }
+    .node-soft { fill: #f7f9fb; stroke: #2f2f2f; stroke-width: 1.5; }
+    .storage { fill: #fffdf7; stroke: #2f2f2f; stroke-width: 1.5; }
+    .external { fill: #f8fbf8; stroke: #2f2f2f; stroke-width: 1.5; }
+    .deploy { fill: #f8f8ff; stroke: #2f2f2f; stroke-width: 1.5; }
+    .title { font: 700 34px Arial, Helvetica, sans-serif; fill: #171717; }
+    .section { font: 700 19px Arial, Helvetica, sans-serif; fill: #171717; }
+    .label { font: 700 18px Arial, Helvetica, sans-serif; fill: #171717; }
+    .small { font: 13px Arial, Helvetica, sans-serif; fill: #4f4f4f; }
+    .tiny { font: 12px Arial, Helvetica, sans-serif; fill: #666666; }
+    .mono { font: 12px "SFMono-Regular", Consolas, "Liberation Mono", monospace; fill: #444444; }
+    .line { stroke: #333333; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .line-muted { stroke: #767676; stroke-width: 1.3; fill: none; marker-end: url(#arrow-muted); }
+    .dash { stroke-dasharray: 6 5; }
+    .pill { fill: #f2f2f2; stroke: #d0d0d0; stroke-width: 1; }
+  </style>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1000"/>
+
+  <g id="diagram-title">
+    <text class="title" x="60" y="58">JEE6-INFRA Runtime and Deployment Architecture</text>
+    <text class="small" x="60" y="84">Docker Compose orchestration for Discord bot, FastAPI services, MariaDB, Redis, vLLM, and filter model</text>
+  </g>
+
+  <g id="client-user">
+    <rect class="node" x="70" y="118" width="185" height="76" rx="8"/>
+    <circle cx="105" cy="151" r="16" fill="#f2f2f2" stroke="#333333" stroke-width="1.2"/>
+    <path d="M 82 183 C 88 166, 122 166, 128 183" stroke="#333333" stroke-width="1.2" fill="none"/>
+    <text class="label" x="142" y="148">Client</text>
+    <text class="small" x="142" y="170">Discord user</text>
+  </g>
+
+  <g id="discord-platform-top">
+    <rect class="external" x="330" y="112" width="240" height="88" rx="8"/>
+    <text class="label" x="360" y="145">Discord Platform</text>
+    <text class="small" x="360" y="168">Gateway events and API</text>
+    <text class="mono" x="360" y="188">discord.py + DISCORD_TOKEN</text>
+  </g>
+
+  <path id="client-to-discord" class="line" d="M 255 156 L 330 156"/>
+  <text class="tiny" x="270" y="143">Discord app</text>
+
+  <g id="server-boundary">
+    <rect class="boundary" x="60" y="230" width="1055" height="530" rx="10"/>
+    <text class="section" x="88" y="264">Server: Docker Compose with host networking</text>
+    <text class="small" x="88" y="287">infra/docker-compose.yml builds submodule apps and runs services on 127.0.0.1 ports</text>
+  </g>
+
+  <g id="bot-service">
+    <rect class="node" x="105" y="320" width="315" height="172" rx="8"/>
+    <text class="label" x="132" y="352">jee6-bot</text>
+    <text class="small" x="132" y="376">JEE6.v1 Discord bot</text>
+    <text class="mono" x="132" y="400">python -m src.main</text>
+    <text class="mono" x="132" y="421">discord.py, SQLAlchemy</text>
+    <text class="mono" x="132" y="442">commands: meal, water, riot,</text>
+    <text class="mono" x="132" y="461">spotify, lang, filter, gambling</text>
+    <rect class="pill" x="300" y="336" width="88" height="28" rx="14"/>
+    <text class="tiny" x="319" y="354">no HTTP port</text>
+  </g>
+
+  <g id="api-service">
+    <rect class="node-soft" x="505" y="315" width="265" height="178" rx="8"/>
+    <text class="label" x="532" y="347">jee6-api</text>
+    <text class="small" x="532" y="371">FastAPI API Gateway</text>
+    <text class="mono" x="532" y="395">uvicorn app.main:app</text>
+    <text class="mono" x="532" y="416">port 6974</text>
+    <text class="mono" x="532" y="437">/meal /water /riot</text>
+    <text class="mono" x="532" y="458">/spotify /time /health</text>
+  </g>
+
+  <g id="filter-service">
+    <rect class="node-soft" x="835" y="315" width="240" height="178" rx="8"/>
+    <text class="label" x="862" y="347">jee6-filter</text>
+    <text class="small" x="862" y="371">Profanity Filter API</text>
+    <text class="mono" x="862" y="395">FastAPI, port 6975</text>
+    <text class="mono" x="862" y="416">/predict /feedback</text>
+    <text class="mono" x="862" y="437">/train BackgroundTasks</text>
+    <text class="mono" x="862" y="458">KcELECTRA tokenizer</text>
+  </g>
+
+  <g id="llm-service">
+    <rect class="node-soft" x="835" y="555" width="240" height="142" rx="8"/>
+    <text class="label" x="862" y="587">jee6-llm</text>
+    <text class="small" x="862" y="611">vLLM OpenAI server</text>
+    <text class="mono" x="862" y="635">port 10000 /v1</text>
+    <text class="mono" x="862" y="656">MODEL_NAME env</text>
+    <text class="mono" x="862" y="677">NVIDIA GPU reserved</text>
+  </g>
+
+  <g id="mariadb-service">
+    <rect class="storage" x="120" y="555" width="260" height="142" rx="8"/>
+    <text class="label" x="150" y="587">jee6-mariadb</text>
+    <text class="small" x="150" y="611">MariaDB 10.11</text>
+    <text class="mono" x="150" y="635">port 3306</text>
+    <text class="mono" x="150" y="656">database: hammer</text>
+    <text class="mono" x="150" y="677">volume: mariadb_data</text>
+  </g>
+
+  <g id="redis-service">
+    <rect class="storage" x="505" y="555" width="265" height="142" rx="8"/>
+    <text class="label" x="532" y="587">jee6-redis</text>
+    <text class="small" x="532" y="611">Redis 7 cache</text>
+    <text class="mono" x="532" y="635">port 6379</text>
+    <text class="mono" x="532" y="656">REDIS_URL db 0</text>
+    <text class="mono" x="532" y="677">volume: redis_data</text>
+  </g>
+
+  <g id="container-healthchecks">
+    <rect class="pill" x="846" y="724" width="218" height="28" rx="14"/>
+    <text class="tiny" x="866" y="743">compose healthchecks: API, filter, DB, Redis</text>
+  </g>
+
+  <path id="discord-to-bot" class="line" d="M 450 200 C 450 250, 322 260, 300 320"/>
+  <text class="tiny" x="368" y="248">gateway events</text>
+  <path id="bot-to-discord" class="line-muted" d="M 228 320 C 220 248, 312 210, 368 198"/>
+  <text class="tiny" x="242" y="244">replies, moderation API</text>
+
+  <path id="bot-to-api" class="line" d="M 420 400 L 505 400"/>
+  <text class="tiny" x="439" y="388">REST</text>
+  <text class="mono" x="437" y="417">127.0.0.1:6974</text>
+
+  <path id="bot-to-filter" class="line" d="M 420 438 C 560 520, 745 520, 835 440"/>
+  <text class="tiny" x="582" y="524">REST moderation checks</text>
+
+  <path id="bot-to-llm" class="line" d="M 420 462 C 605 620, 720 626, 835 626"/>
+  <text class="tiny" x="597" y="650">OpenAI-compatible chat</text>
+
+  <path id="bot-to-db" class="line" d="M 245 492 L 245 555"/>
+  <text class="tiny" x="258" y="528">SQLAlchemy / MySQL</text>
+
+  <path id="api-to-redis" class="line" d="M 638 493 L 638 555"/>
+  <text class="tiny" x="650" y="528">cache TTLs</text>
+
+  <g id="volumes-note">
+    <rect class="pill" x="852" y="704" width="210" height="28" rx="14"/>
+    <text class="tiny" x="875" y="723">llm_data and filter_data mount /data</text>
+  </g>
+
+  <g id="external-services">
+    <rect class="boundary" x="1180" y="230" width="350" height="530" rx="10"/>
+    <text class="section" x="1210" y="264">External services referenced</text>
+
+    <g id="external-neis">
+      <rect class="external" x="1220" y="300" width="270" height="54" rx="8"/>
+      <text class="label" x="1242" y="323">NEIS School Meal API</text>
+      <text class="mono" x="1242" y="342">open.neis.go.kr</text>
+    </g>
+
+    <g id="external-seoul">
+      <rect class="external" x="1220" y="374" width="270" height="54" rx="8"/>
+      <text class="label" x="1242" y="397">Seoul Open Data</text>
+      <text class="mono" x="1242" y="416">openapi.seoul.go.kr:8088</text>
+    </g>
+
+    <g id="external-riot">
+      <rect class="external" x="1220" y="448" width="270" height="68" rx="8"/>
+      <text class="label" x="1242" y="471">Riot Games APIs</text>
+      <text class="mono" x="1242" y="490">kr / asia / ap api.riotgames.com</text>
+      <text class="mono" x="1242" y="507">Data Dragon champion data</text>
+    </g>
+
+    <g id="external-spotify">
+      <rect class="external" x="1220" y="536" width="270" height="54" rx="8"/>
+      <text class="label" x="1242" y="559">Spotify Web API</text>
+      <text class="mono" x="1242" y="578">client credentials or refresh token</text>
+    </g>
+
+    <g id="external-flooding">
+      <rect class="external" x="1220" y="610" width="270" height="54" rx="8"/>
+      <text class="label" x="1242" y="633">Flooding API</text>
+      <text class="mono" x="1242" y="652">optional, FLOODING_API_BASE_URL</text>
+    </g>
+
+    <g id="external-huggingface">
+      <rect class="external" x="1220" y="684" width="270" height="54" rx="8"/>
+      <text class="label" x="1242" y="707">Hugging Face Hub</text>
+      <text class="mono" x="1242" y="726">model/tokenizer downloads</text>
+    </g>
+  </g>
+
+  <path id="api-to-neis" class="line" d="M 770 350 C 980 330, 1055 320, 1220 327"/>
+  <text class="tiny" x="956" y="318">meal route</text>
+  <path id="api-to-seoul" class="line" d="M 770 380 C 990 382, 1055 396, 1220 401"/>
+  <text class="tiny" x="960" y="383">water route</text>
+  <path id="api-to-riot" class="line" d="M 770 418 C 990 452, 1055 475, 1220 482"/>
+  <text class="tiny" x="974" y="462">riot route</text>
+  <path id="api-to-spotify" class="line" d="M 770 454 C 990 530, 1055 558, 1220 563"/>
+  <text class="tiny" x="972" y="535">spotify route</text>
+  <path id="bot-to-flooding" class="line-muted dash" d="M 420 350 C 770 270, 1040 600, 1220 637"/>
+  <text class="tiny" x="884" y="590">enabled only when env URL is set</text>
+  <path id="llm-to-hf" class="line-muted" d="M 1075 626 C 1160 650, 1170 706, 1220 711"/>
+  <text class="tiny" x="1112" y="674">model cache</text>
+  <path id="filter-to-hf" class="line-muted" d="M 1075 445 C 1165 492, 1170 690, 1220 708"/>
+  <text class="tiny" x="1105" y="518">transformers</text>
+
+  <g id="security-notes">
+    <rect class="node" x="1180" y="120" width="350" height="80" rx="8"/>
+    <text class="label" x="1210" y="150">Secrets and auth</text>
+    <text class="mono" x="1210" y="173">env files: Discord, DB, Riot, Spotify, HF</text>
+    <text class="mono" x="1210" y="192">GitHub Secrets: SSH deploy credentials</text>
+  </g>
+
+  <g id="local-ops">
+    <rect class="deploy" x="60" y="820" width="225" height="90" rx="8"/>
+    <text class="label" x="88" y="852">Local operator</text>
+    <text class="mono" x="88" y="876">make setup / up / dev</text>
+    <text class="mono" x="88" y="895">infra/deploy.sh</text>
+  </g>
+
+  <g id="github-repo">
+    <rect class="deploy" x="345" y="820" width="220" height="90" rx="8"/>
+    <text class="label" x="374" y="852">GitHub repository</text>
+    <text class="mono" x="374" y="876">apps/* submodules</text>
+    <text class="mono" x="374" y="895">master branch</text>
+  </g>
+
+  <g id="github-actions">
+    <rect class="deploy" x="625" y="820" width="240" height="90" rx="8"/>
+    <text class="label" x="654" y="852">GitHub Actions</text>
+    <text class="mono" x="654" y="876">deploy.yml</text>
+    <text class="mono" x="654" y="895">push to master or manual</text>
+  </g>
+
+  <g id="ssh-deploy">
+    <rect class="deploy" x="925" y="820" width="240" height="90" rx="8"/>
+    <text class="label" x="954" y="852">SSH deploy step</text>
+    <text class="mono" x="954" y="876">appleboy/ssh-action</text>
+    <text class="mono" x="954" y="895">git pull + submodules</text>
+  </g>
+
+  <g id="compose-deploy">
+    <rect class="deploy" x="1225" y="820" width="270" height="90" rx="8"/>
+    <text class="label" x="1254" y="852">Docker Compose deploy</text>
+    <text class="mono" x="1254" y="876">cd infra</text>
+    <text class="mono" x="1254" y="895">docker compose up -d --build</text>
+  </g>
+
+  <path id="local-to-compose" class="line-muted" d="M 285 865 C 650 768, 1020 766, 1225 842"/>
+  <text class="tiny" x="610" y="785">manual path</text>
+  <path id="repo-to-actions" class="line" d="M 565 865 L 625 865"/>
+  <text class="tiny" x="574" y="850">trigger</text>
+  <path id="actions-to-ssh" class="line" d="M 865 865 L 925 865"/>
+  <text class="tiny" x="882" y="850">secrets</text>
+  <path id="ssh-to-compose" class="line" d="M 1165 865 L 1225 865"/>
+  <text class="tiny" x="1176" y="850">server</text>
+  <path id="compose-to-runtime" class="line-muted" d="M 1360 820 C 1320 772, 930 748, 930 748"/>
+  <text class="tiny" x="1120" y="780">starts containers above</text>
+</svg>
