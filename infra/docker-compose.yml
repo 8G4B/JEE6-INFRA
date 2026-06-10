@@ -52,6 +52,9 @@ services:
       start_period: 10s
 
   llm:
+    # GPU(NVIDIA) 가 있는 호스트에서만 기동한다.
+    # 기본 배포에서는 제외되며, 띄우려면: docker compose --profile gpu up -d
+    profiles: ["gpu"]
     build:
       context: ../apps/JEE6-LLM
       dockerfile: dockerfile

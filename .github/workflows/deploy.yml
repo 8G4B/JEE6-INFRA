@@ -21,9 +21,16 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            set -e
             cd ${{ secrets.DEPLOY_PATH }}
             sudo git pull origin master
             sudo git submodule update --init --recursive
             cd infra
             sudo docker compose up -d --build
             sudo docker compose ps
+            # 봇이 실제로 실행 중인지 검증 (아니면 로그를 남기고 배포 실패 처리)
+            if [ "$(sudo docker inspect -f '{{.State.Running}}' jee6-bot 2>/dev/null)" != "true" ]; then
+              echo "::error::jee6-bot 컨테이너가 실행 중이 아닙니다"
+              sudo docker compose logs --tail=80 bot || true
+              exit 1
+            fi
