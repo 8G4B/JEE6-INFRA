@@ -93,6 +93,12 @@ services:
     container_name: jee6-filter
     restart: unless-stopped
     network_mode: host
+    environment:
+      - FILTER_INFERENCE_WORKERS=${FILTER_INFERENCE_WORKERS:-1}
+      - FILTER_TORCH_THREADS=${FILTER_TORCH_THREADS:-2}
+      - FILTER_DYNAMIC_QUANTIZATION=${FILTER_DYNAMIC_QUANTIZATION:-false}
+      - OMP_NUM_THREADS=${FILTER_TORCH_THREADS:-2}
+      - MKL_NUM_THREADS=${FILTER_TORCH_THREADS:-2}
     volumes:
       - filter_data:/data
     healthcheck:
