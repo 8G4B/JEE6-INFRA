@@ -45,7 +45,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:6974/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:6974/ready')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -67,9 +67,16 @@ services:
     entrypoint: []
     command: >
       sh -c "vllm serve $${MODEL_NAME} --host 0.0.0.0 --port $${PORT}
-      --gpu-memory-utilization 0.95 --max-model-len 4096 --quantization awq_marlin --enforce-eager"
+      --gpu-memory-utilization 0.95 --max-model-len 4096 --quantization awq_marlin
+      --enable-prefix-caching"
     volumes:
       - llm_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:10000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 180s
     deploy:
       resources:
         reservations:
@@ -86,6 +93,12 @@ services:
     container_name: jee6-filter
     restart: unless-stopped
     network_mode: host
+    environment:
+      - FILTER_INFERENCE_WORKERS=${FILTER_INFERENCE_WORKERS:-1}
+      - FILTER_TORCH_THREADS=${FILTER_TORCH_THREADS:-2}
+      - FILTER_DYNAMIC_QUANTIZATION=${FILTER_DYNAMIC_QUANTIZATION:-false}
+      - OMP_NUM_THREADS=${FILTER_TORCH_THREADS:-2}
+      - MKL_NUM_THREADS=${FILTER_TORCH_THREADS:-2}
     volumes:
       - filter_data:/data
     healthcheck:
