@@ -67,9 +67,16 @@ services:
     entrypoint: []
     command: >
       sh -c "vllm serve $${MODEL_NAME} --host 0.0.0.0 --port $${PORT}
-      --gpu-memory-utilization 0.95 --max-model-len 4096 --quantization awq_marlin --enforce-eager"
+      --gpu-memory-utilization 0.95 --max-model-len 4096 --quantization awq_marlin
+      --enable-prefix-caching"
     volumes:
       - llm_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:10000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 180s
     deploy:
       resources:
         reservations:
