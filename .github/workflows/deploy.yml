@@ -26,6 +26,9 @@ jobs:
             sudo git pull origin master
             sudo git submodule update --init --recursive
             cd infra
+            if ! sudo grep -q '^NEIS_API_KEY=.' env/bot.env; then
+              { echo; sudo sed -n 's/^MEAL_API_KEY=\(..*\)$/NEIS_API_KEY=\1/p' env/api.env; } | sudo tee -a env/bot.env > /dev/null
+            fi
             sudo docker compose up -d --build
             sudo docker compose ps
             # 봇이 실제로 실행 중인지 검증 (아니면 로그를 남기고 배포 실패 처리)
