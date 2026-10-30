@@ -124,6 +124,9 @@ services:
       - VLLM_BASE_URL=http://127.0.0.1:10000/v1
       - API_GATEWAY_URL=http://127.0.0.1:6974
       - FILTER_API_URL=http://127.0.0.1:6975
+      - MEAL_CACHE_PATH=/data/meal/weeks.json
+    volumes:
+      - bot_meal_data:/data/meal
     depends_on:
       mariadb:
         condition: service_healthy
@@ -133,6 +136,8 @@ services:
         condition: service_healthy
 
 volumes:
+  bot_meal_data:
+    driver: local
   mariadb_data:
     driver: local
   llm_data:
