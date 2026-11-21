@@ -4,7 +4,7 @@ JEE6 서비스 전체를 Docker Compose로 관리하는 orchestration repository
 
 ## Architecture
 
-![alt text](architecture.png)
+<img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/d3856996-9cf5-411c-8c6c-f1b3abd4a505" />
 
 
 ```
